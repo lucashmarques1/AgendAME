@@ -1,0 +1,14 @@
+Dia da atualização: 22/12/2024
+
+OBS: sofrendo com a página Administrator.php - Falta puxar informações, resetar senha, 
+
+
+Falta Verificar:
+- Administrator.php
+
+- Falta Arrumar Layout Administrator (Administrator.php)
+- Falta Cadastro Responsavel e desativar Responsavel (Administrator.php)
+- Falta Cadastrar nome usuário e desativar Usuario (Administrator.php)
+- Falta Cadastro Responsavel/Especialidade e desativar relação entre os dois (Administrator.php)
+
+- Falta Testar
