@@ -31,7 +31,11 @@
 
                         $userType = $_SESSION["user_type"];
 
-                        echo "<li class='nav-item'><a class='nav-link' href='$screen_administrator'>Meu perfil</a></li>";
+                        echo "<li class='nav-item'><a class='nav-link' href='$screen_profile'>Meu Perfil</a></li>";
+
+                        if ($userType == $user_administrator) {
+                            echo "<li class='nav-item'><a class='nav-link' href='$screen_administrator'>Configurações</a></li>";
+                        }
 
                         if ($userType == $user_administrator || $userType == $user_callcenter || $userType == $user_supervisor) {
                             echo "<li class='nav-item'><a class='nav-link' href='$screen_cancellation_form'>Ficha de Cancelamento</a></li>";

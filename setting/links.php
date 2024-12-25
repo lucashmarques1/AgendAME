@@ -5,4 +5,5 @@ $screen_scheduling = 'scheduling.php';
 $screen_schedule_list = 'schedule_list.php';
 $screen_historic = 'historic.php';
 $screen_administrator = 'administrator.php';
+$screen_profile = 'profile.php';
 ?>

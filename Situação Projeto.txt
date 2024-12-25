@@ -1,6 +1,6 @@
-Dia da atualização: 22/12/2024
+Dia da atualização: 25/12/2024
 
-OBS: sofrendo com a página Administrator.php - Falta puxar informações, resetar senha, 
+OBS: sofrendo com a página Administrator.php e profile.php - Falta puxar informações, resetar senha... 
 
 
 Falta Verificar:
@@ -8,7 +8,7 @@ Falta Verificar:
 
 - Falta Arrumar Layout Administrator (Administrator.php)
 - Falta Cadastro Responsavel e desativar Responsavel (Administrator.php)
-- Falta Cadastrar nome usuário e desativar Usuario (Administrator.php)
+- Falta Cadastrar nome usuário e desativar Usuario (profile.php)
 - Falta Cadastro Responsavel/Especialidade e desativar relação entre os dois (Administrator.php)
 
 - Falta Testar
