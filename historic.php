@@ -94,7 +94,7 @@ $stmt->close();
     <title>Histórico</title>
 </head>
 
-<body id="screen-main-schedule">
+<body id="screen-historic">
     <div class="container">
         <!-- Formulário de busca para informações individuais do paciente -->
         <h2>Buscar Paciente Individual</h2>

@@ -10,25 +10,49 @@ if (!in_array($_SESSION["user_type"], [$user_administrator])) {
     exit();
 }
 
-
-// Função para verificar a existência de especialidade
-function specialtyExists($connection, $specialty_name)
+// Funções para especialidades
+function getSpecialtyById($connection, $id)
 {
-    $stmt = $connection->prepare("SELECT * FROM medical_specialty WHERE specialty_name = ?");
-    $stmt->bind_param("s", $specialty_name);
+    $stmt = $connection->prepare("SELECT id, specialty_name, active FROM medical_specialty WHERE id = ?");
+    $stmt->bind_param("i", $id);
     $stmt->execute();
-    return $stmt->get_result()->num_rows > 0;
+    return $stmt->get_result()->fetch_assoc();
 }
 
-// Função para cadastrar especialidade
-function registerSpecialty($connection, $specialty_name)
+function saveSpecialty($connection, $id, $specialty_name, $active)
 {
-    $stmt = $connection->prepare("INSERT INTO medical_specialty (specialty_name) VALUES (?)");
-    $stmt->bind_param("s", $specialty_name);
+    if ($id) {
+        $stmt = $connection->prepare("UPDATE medical_specialty SET specialty_name = ?, active = ? WHERE id = ?");
+        $stmt->bind_param("sii", $specialty_name, $active, $id);
+    } else {
+        $stmt = $connection->prepare("INSERT INTO medical_specialty (specialty_name, active) VALUES (?, ?)");
+        $stmt->bind_param("si", $specialty_name, $active);
+    }
     return $stmt->execute();
 }
 
-// Funções para carregar dados
+// Funções para profissionais
+function getProfessionalById($connection, $id)
+{
+    $stmt = $connection->prepare("SELECT id, name, license_number, license_type, active FROM professional WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+function saveProfessional($connection, $id, $name, $license_number, $license_type, $active)
+{
+    if ($id) {
+        $stmt = $connection->prepare("UPDATE professional SET name = ?, license_number = ?, license_type = ?, active = ? WHERE id = ?");
+        $stmt->bind_param("sssii", $name, $license_number, $license_type, $active, $id);
+    } else {
+        $stmt = $connection->prepare("INSERT INTO professional (name, license_number, license_type, active) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("sssi", $name, $license_number, $license_type, $active);
+    }
+    return $stmt->execute();
+}
+
+// Funções para carregar dados Profissionais/Especialidades
 function getProfessionals($connection)
 {
     $stmt = $connection->prepare("SELECT id, name, active FROM professional");
@@ -53,6 +77,34 @@ function getProfessionalSpecialties($connection)
     );
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// Processamento do formulário de especialidade
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['specialty_name'])) {
+    $id = $_POST['specialty_id'] ?? null;
+    $specialty_name = $_POST['specialty_name'] ?? '';
+    $active = $_POST['active'] ?? 1;
+
+    if (saveSpecialty($connection, $id, $specialty_name, $active)) {
+        echo "<script>alert('Especialidade salva com sucesso!'); window.location.href = 'administrator.php';</script>";
+    } else {
+        echo "<script>alert('Erro ao salvar especialidade.');</script>";
+    }
+}
+
+// Processamento do formulário de profissional
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['professional_name'])) {
+    $id = $_POST['professional_id'] ?? null;
+    $name = $_POST['professional_name'] ?? '';
+    $license_number = $_POST['license_number'] ?? '';
+    $license_type = $_POST['license_type'] ?? '';
+    $active = $_POST['active'] ?? 1;
+
+    if (saveProfessional($connection, $id, $name, $license_number, $license_type, $active)) {
+        echo "<script>alert('Profissional salvo com sucesso!'); window.location.href = 'administrator.php';</script>";
+    } else {
+        echo "<script>alert('Erro ao salvar profissional.');</script>";
+    }
 }
 
 // Processamento do formulário de vínculo entre profissional e especialidade
@@ -98,34 +150,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['professional_specialt
             }
         }
     }
-    // Atualiza a página para refletir mudanças no frontend
+    // Atualiza a página para refletir mudanças no select
     print("<script>window.location.href = window.location.href;</script>");
     exit();
 }
 
-// Processamento do formulário de especialidade
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['specialty_name'])) {
-    $specialty_name = $_POST['specialty_name'];
-
-    if (specialtyExists($connection, $specialty_name)) {
-        print("<script>alert('A especialidade já existe.');</script>");
-    } elseif (registerSpecialty($connection, $specialty_name)) {
-        print("<script>alert('Especialidade cadastrada com sucesso.');</script>");
-    } else {
-        print("<script>alert('Erro ao cadastrar a especialidade.');</script>");
-    }
+// Carrega os dados para edição
+$specialty = ["id" => "", "specialty_name" => "", "active" => 1];
+if (isset($_GET['specialty_id']) && !empty($_GET['specialty_id'])) {
+    $specialty = getSpecialtyById($connection, intval($_GET['specialty_id'])) ?? $specialty;
 }
 
-// Busca todas as especialidades médicas existentes
-$existingSpecialties = $connection->query("SELECT specialty_name FROM medical_specialty ORDER BY specialty_name ASC");
+$professional = ["id" => "", "name" => "", "license_number" => "", "license_type" => "CRM", "active" => 1];
+if (isset($_GET['professional_id']) && !empty($_GET['professional_id'])) {
+    $professional = getProfessionalById($connection, intval($_GET['professional_id'])) ?? $professional;
+}
 
+// Busca listas para dropdown
+$existingSpecialties = $connection->query("SELECT id, specialty_name FROM medical_specialty ORDER BY specialty_name ASC");
+$existingProfessionals = $connection->query("SELECT id, name FROM professional ORDER BY name ASC");
 
+// Buscar Profissionais, Especialidades para usar nos vinculos
 $professionals = getProfessionals($connection);
 $specialties = getSpecialties($connection);
 $professionalSpecialties = getProfessionalSpecialties($connection);
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -133,7 +182,7 @@ $professionalSpecialties = getProfessionalSpecialties($connection);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu perfil</title>
+    <title>Cadastro</title>
 
     <script>
         const professionalSpecialties = <?= json_encode($professionalSpecialties) ?>;
@@ -176,57 +225,85 @@ $professionalSpecialties = getProfessionalSpecialties($connection);
         window.onload = function() {
             loadOptions(document.getElementById('professional_id'), professionals, true);
             loadOptions(document.getElementById('specialty_id'), specialties, true);
-            handleSelectChange(); // Garante carregamento inicial correto
+            handleSelectChange();
         }
     </script>
 </head>
 
-<body class="text-white " style="background-color: #156183;">
+<body class="text-white" style="background-color: #156183;">
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <!-- Formulário de Cadastro de Especialidade Médica -->
+            <!-- Especialidade -->
             <div class="col-md-3 p-3 bg-white rounded shadow mb-4 mx-1">
-                <h2 class="text-center mb-4 text-dark">Especialidade Médica</h2>
+                <h2 class="text-center mb-4">Especialidade Médica</h2>
                 <form method="POST">
-                    <div class="mb-3">
-                        <label for="specialty_name" class="form-label text-dark">Nome da Especialidade</label>
-                        <input type="text" name="specialty_name" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 mb-4">Cadastrar Especialidade</button>
-                </form>
-
-                <div class="mb-3">
-                    <label for="existing_specialties" class="form-label text-dark">Especialidades Existentes</label>
-                    <select id="existing_specialties" class="form-select">
-                        <option value="" disabled selected>Selecione uma especialidade médica</option>
+                    <select name="specialty_id" class="form-select mb-3" onchange="window.location.href='?specialty_id=' + this.value">
+                        <option value="">Nova Especialidade</option>
                         <?php while ($row = $existingSpecialties->fetch_assoc()): ?>
-                            <option value="<?php echo $row['specialty_name']; ?>"><?php echo $row['specialty_name']; ?></option>
+                            <option value="<?= $row['id'] ?>" <?= ($row['id'] == $specialty['id']) ? 'selected' : '' ?>><?= $row['specialty_name'] ?></option>
                         <?php endwhile; ?>
                     </select>
-                </div>
+                    <input type="text" name="specialty_name" class="form-control mb-3" placeholder="Nome da Especialidade" value="<?= htmlspecialchars($specialty['specialty_name']) ?>" required>
+                    <select name="active" class="form-select mb-3">
+                        <option value="1" <?= ($specialty['active'] == 1) ? 'selected' : '' ?>>Ativo</option>
+                        <option value="0" <?= ($specialty['active'] == 0) ? 'selected' : '' ?>>Inativo</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                </form>
             </div>
 
-            <!-- Formulário de Vínculo -->
-            <form method="POST">
-                <h2>Gerenciar Vínculo</h2>
-                <select id="professional_specialty_id" name="professional_specialty_id" required onchange="handleSelectChange()">
-                    <option value="novo">Novo</option>
-                    <?php foreach ($professionalSpecialties as $link): ?>
-                        <option value="<?= $link['id'] ?>">
-                            <?= $link['professional_name'] ?> - <?= $link['specialty_name'] ?> - <?= $link['active'] ? 'Ativo' : 'Inativo' ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <select id="professional_id" name="professional_id" required></select>
-                <select id="specialty_id" name="specialty_id" required></select>
-                <select id="active" name="active" required>
-                    <option value="1">Ativo</option>
-                    <option value="0">Inativo</option>
-                </select>
-                <button type="submit">Salvar</button>
-            </form>
+            <!-- Profissional -->
+            <div class="col-md-3 p-3 bg-white rounded shadow mb-4 mx-1">
+                <h2 class="text-center mb-4">Profissional</h2>
+                <form method="POST">
+                    <select name="professional_id" class="form-select mb-3" onchange="window.location.href='?professional_id=' + this.value">
+                        <option value="">Novo Profissional</option>
+                        <?php while ($row = $existingProfessionals->fetch_assoc()): ?>
+                            <option value="<?= $row['id'] ?>" <?= ($row['id'] == $professional['id']) ? 'selected' : '' ?>><?= $row['name'] ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                    <input type="text" name="professional_name" class="form-control mb-3" placeholder="Nome" value="<?= htmlspecialchars($professional['name']) ?>" required>
+                    <input type="text" name="license_number" class="form-control mb-3" placeholder="Nº Licença" value="<?= htmlspecialchars($professional['license_number']) ?>" required>
+                    <select name="license_type" class="form-select mb-3">
+                        <option value="CRM" <?= ($professional['license_type'] == 'CRM') ? 'selected' : '' ?>>CRM</option>
+                        <option value="COREN" <?= ($professional['license_type'] == 'COREN') ? 'selected' : '' ?>>COREN</option>
+                        <option value="FONO" <?= ($professional['license_type'] == 'FONO') ? 'selected' : '' ?>>FONO</option>
+                        <option value="Psicologa" <?= ($professional['license_type'] == 'Psicologa') ? 'selected' : '' ?>>Psicologa</option>
+                    </select>
+                    <select name="active" class="form-select mb-3">
+                        <option value="1" <?= ($professional['active'] == 1) ? 'selected' : '' ?>>Ativo</option>
+                        <option value="0" <?= ($professional['active'] == 0) ? 'selected' : '' ?>>Inativo</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                </form>
+            </div>
         </div>
-    </div>y
+
+        <!-- Formulário de Vínculo Profissional/Especialidade -->
+        <div class="row text-center justify-content-center">
+            <div class="col-md-8 p-3 bg-white rounded shadow mb-4 mx-1 text-center">
+                <h2 class="text-center mb-4">Gerenciar Profissional/Especialidade</h2>
+                <form method="POST">
+                    <select id="professional_specialty_id" name="professional_specialty_id" class="form-select mb-3" required onchange="handleSelectChange()">
+                        <option value="novo">Novo Vínculo</option>
+                        <?php foreach ($professionalSpecialties as $link): ?>
+                            <option value="<?= $link['id'] ?>">
+                                <?= $link['professional_name'] ?> - <?= $link['specialty_name'] ?> - <?= $link['active'] ? 'Ativo' : 'Inativo' ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <select id="professional_id" name="professional_id" class="form-select mb-3" required></select>
+                    <select id="specialty_id" name="specialty_id" class="form-select mb-3" required></select>
+                    <select id="active" name="active" class="form-select mb-3" required>
+                        <option value="1">Ativo</option>
+                        <option value="0">Inativo</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
 </body>
 
 </html>

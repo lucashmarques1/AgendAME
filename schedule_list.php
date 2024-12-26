@@ -143,7 +143,7 @@ $result = fetchPatients($connection, $_POST['search'] ?? null);
     <title>Lista de Agendas Disponíveis</title>
 </head>
 
-<body id="screen-patients">
+<body id="screen-schedule-list">
     <div class="container">
         <h2>Lista de Agendas Disponíveis</h2>
         <div class="row justify-content-center">

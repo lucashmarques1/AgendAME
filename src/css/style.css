@@ -4,6 +4,11 @@ body {
     padding: 0;
 }
 
+h2,
+h3 {
+    color: #156183;
+}
+
 .btn-primary {
     background-color: #156183;
     border-color: #156183;
@@ -14,12 +19,14 @@ body {
     border-color: #0f4d64;
 }
 
+#date_time_cancellation {
+    margin-bottom: 30px;
+}
 
 
 
-
-/* callcenter.php */
-#screen-callcenter .container {
+/* cancellation-form.php */
+#screen-cancellation-form .container {
     width: 60%;
     margin: 50px auto;
     background-color: #fff;
@@ -27,7 +34,7 @@ body {
     padding: 30px;
 }
 
-#screen-callcenter h2 {
+#screen-cancellation-form h2 {
     text-align: center;
     margin-bottom: 30px;
     color: #156183;
@@ -35,17 +42,17 @@ body {
     letter-spacing: 2px;
 }
 
-#screen-callcenter label {
+#screen-cancellation-form label {
     font-weight: bold;
     color: #666;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-#screen-callcenter input[type="text"],
-#screen-callcenter input[type="number"],
-#screen-callcenter select,
-#screen-callcenter textarea {
+#screen-cancellation-form input[type="text"],
+#screen-cancellation-form input[type="number"],
+#screen-cancellation-form select,
+#screen-cancellation-form textarea {
     width: calc(100% - 24px);
     padding: 12px;
     margin-bottom: 20px;
@@ -56,16 +63,12 @@ body {
     background-color: #f9f9f9;
 }
 
-#screen-callcenter textarea {
+#screen-cancellation-form textarea {
     resize: none;
     height: 150px;
 }
 
-#date_time_cancellation {
-    margin-bottom: 30px;
-}
-
-#screen-callcenter button {
+#screen-cancellation-form button {
     width: 100%;
     padding: 15px;
     background-color: #156183;
@@ -77,16 +80,14 @@ body {
     transition: background-color 0.3s ease;
 }
 
-#screen-callcenter button:hover {
+#screen-cancellation-form button:hover {
     background-color: #0f4d64;
 }
 
 
 
-
-
-/* main_schedule.php */
-#screen-main-schedule .container {
+/* historic.php */
+#screen-historic .container {
     margin-top: 50px;
     padding: 20px;
     border-radius: 10px;
@@ -94,7 +95,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-#screen-main-schedule h2 {
+#screen-historic h2 {
     text-align: center;
     margin-top: 10px;
     margin-bottom: 30px;
@@ -102,27 +103,27 @@ body {
     text-transform: uppercase;
 }
 
-#screen-main-schedule .input-group {
+#screen-historic .input-group {
     margin-bottom: 20px;
 }
 
-#screen-main-schedule .input-group-text {
+#screen-historic .input-group-text {
     background-color: #156183;
     border-color: #156183;
     color: #fff;
 }
 
-#screen-main-schedule .btn-primary {
+#screen-historic .btn-primary {
     background-color: #156183;
     border-color: #156183;
 }
 
-#screen-main-schedule .btn-primary:hover {
+#screen-historic .btn-primary:hover {
     background-color: #0f4d64;
     border-color: #0f4d64;
 }
 
-#screen-main-schedule .table {
+#screen-historic .table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
@@ -130,56 +131,33 @@ body {
     overflow: hidden;
 }
 
-#screen-main-schedule .table th,
-#screen-main-schedule .table td {
+#screen-historic .table th,
+#screen-historic .table td {
     padding: 15px;
     vertical-align: middle;
     border-top: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
 }
 
-#screen-main-schedule .table th {
+#screen-historic .table th {
     background-color: #156183;
     color: #fff;
     font-weight: bold;
     text-align: center;
 }
 
-#screen-main-schedule .table tbody tr:nth-of-type(odd) {
+#screen-historic .table tbody tr:nth-of-type(odd) {
     background-color: rgba(21, 97, 131, 0.05);
 }
 
-#screen-main-schedule .table tbody tr:hover {
+#screen-historic .table tbody tr:hover {
     background-color: rgba(21, 97, 131, 0.1);
 }
 
-/*
-#screen-main-schedule .cancelado,
-#screen-main-schedule .marcado,
-#screen-main-schedule .substituido,
-#screen-main-schedule .pendente {
-    color: #fff !important;
-    background-color: #d12a3b !important;
-    text-align: center !important;
-}
-
-#screen-main-schedule .marcado {
-    background-color: #198754 !important;
-}
-
-#screen-main-schedule .substituido {
-    background-color: #f28a46 !important;
-}
-
-#screen-main-schedule .pendente {
-    background-color: #336699 !important;
-}
-*/
 
 
-
-/* patients.php */
-#screen-patients .container {
+/* schedule-list.php */
+#screen-schedule-list .container {
     margin-top: 50px;
     padding: 20px;
     border-radius: 10px;
@@ -187,7 +165,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-#screen-patients h2 {
+#screen-schedule-list h2 {
     text-align: center;
     margin-top: 10px;
     margin-bottom: 30px;
@@ -195,17 +173,17 @@ body {
     text-transform: uppercase;
 }
 
-#screen-patients .input-group {
+#screen-schedule-list .input-group {
     margin-bottom: 20px;
 }
 
-#screen-patients .input-group-text {
+#screen-schedule-list .input-group-text {
     background-color: #156183;
     border-color: #156183;
     color: #fff;
 }
 
-#screen-patients .table {
+#screen-schedule-list .table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
@@ -213,30 +191,28 @@ body {
     overflow: hidden;
 }
 
-#screen-patients .table th,
-#screen-patients .table td {
+#screen-schedule-list .table th,
+#screen-schedule-list .table td {
     padding: 15px;
     vertical-align: middle;
     border-top: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
 }
 
-#screen-patients .table th {
+#screen-schedule-list .table th {
     background-color: #156183;
     color: #fff;
     font-weight: bold;
     text-align: center;
 }
 
-#screen-patients .table tbody tr:nth-of-type(odd) {
+#screen-schedule-list .table tbody tr:nth-of-type(odd) {
     background-color: rgba(21, 97, 131, 0.05);
 }
 
-#screen-patients .table tbody tr:hover {
+#screen-schedule-list .table tbody tr:hover {
     background-color: rgba(21, 97, 131, 0.1);
 }
-
-
 
 
 

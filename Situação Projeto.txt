@@ -1,14 +1,5 @@
 Dia da atualização: 25/12/2024
 
-OBS: sofrendo com a página Administrator.php - Falta puxar informações, ativar, desativar, novo. 
-
 
 Falta Verificar:
-- Administrator.php
-
-- Falta Arrumar Layout Administrator (Administrator.php)
-- Falta Cadastro Responsavel e desativar Responsavel (Administrator.php)
-- Falta Cadastrar nome usuário e desativar Usuario (profile.php)
-- Falta Cadastro Responsavel/Especialidade e desativar relação entre os dois (Administrator.php)
-
-- Falta Testar
+- Falta Testar Todas Funcionalidades e validar tudo

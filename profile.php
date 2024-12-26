@@ -78,15 +78,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['new_password'], $_POST
     }
 }
 
-
-
 // Processamento para buscar informações do usuário
 $user = [];
 if (!empty($_POST['id'])) {
     $user = getUserInfo($connection, intval($_POST['id']));
 }
 
-// Processamento do formulário
+// Processamento do formulário de cadastro/edição de usuário
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
     $id = $_POST['id'] ?? null;
     $name = $_POST['name'] ?? '';
@@ -111,6 +109,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
 $users = $connection->query("SELECT id, username FROM user ORDER BY username ASC");
 ?>
 
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -125,7 +125,7 @@ $users = $connection->query("SELECT id, username FROM user ORDER BY username ASC
         ?>
             <div class="row justify-content-center">
                 <div class="col-md-4 p-5 bg-white rounded shadow mb-4 mx-1">
-                    <h2 class="text-center mb-4 text-dark">Cadastro de Usuário</h2>
+                    <h2 class="text-center mb-4">Cadastro de Usuário</h2>
                     <form method="POST">
                         <div class="mb-3">
                             <label for="select_user" class="form-label text-dark">Selecionar Usuário</label>
@@ -173,10 +173,10 @@ $users = $connection->query("SELECT id, username FROM user ORDER BY username ASC
                 </div>
             <?php } ?>
 
-            <!-- Formulário de Alteração de Senha (Somente para usuários específicos) -->
 
+            <!-- Formulário de Alteração de Senha (Somente para usuários específicos) -->
             <div class="col-md-4 p-5 bg-white rounded shadow mb-4 mx-1">
-                <h2 class="text-center mb-4 text-dark">Alterar Sua Senha</h2>
+                <h2 class="text-center mb-4">Alterar Sua Senha</h2>
                 <form method="POST">
                     <div class="mb-3 position-relative">
                         <label for="new_password" class="form-label text-dark">Nova Senha</label>
@@ -198,14 +198,13 @@ $users = $connection->query("SELECT id, username FROM user ORDER BY username ASC
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Alterar Senha</button>
                 </form>
-                <?php if ($passwordMessage) echo "<div class='alert alert-info mt-3'>$passwordMessage</div>"; ?>
             </div>
             </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Função genérica para mostrar/ocultar senha
+            // Função para mostrar/ocultar senha
             function toggleVisibility(inputId, toggleId) {
                 const inputField = document.getElementById(inputId);
                 const toggleIcon = document.getElementById(toggleId);

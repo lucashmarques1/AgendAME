@@ -119,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["REGISTRATION_CANCELLAT
     <title>Ficha de Cancelamento</title>
 </head>
 
-<body id="screen-callcenter">
+<body id="screen-cancellation-form">
     <div class="container">
         <h2>Ficha de Cancelamento</h2>
 
