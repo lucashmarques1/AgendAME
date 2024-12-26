@@ -1,6 +1,6 @@
 Dia da atualização: 25/12/2024
 
-OBS: sofrendo com a página Administrator.php e profile.php - Falta puxar informações, resetar senha... 
+OBS: sofrendo com a página Administrator.php - Falta puxar informações, ativar, desativar, novo. 
 
 
 Falta Verificar:

@@ -34,7 +34,7 @@
                         echo "<li class='nav-item'><a class='nav-link' href='$screen_profile'>Meu Perfil</a></li>";
 
                         if ($userType == $user_administrator) {
-                            echo "<li class='nav-item'><a class='nav-link' href='$screen_administrator'>Configurações</a></li>";
+                            echo "<li class='nav-item'><a class='nav-link' href='$screen_administrator'>Cadastros</a></li>";
                         }
 
                         if ($userType == $user_administrator || $userType == $user_callcenter || $userType == $user_supervisor) {

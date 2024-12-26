@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["logout"]) && $_GET["logo
 
 // Verificar se o usuário está logado e redirecionar com base no tipo de usuário
 if (isset($_SESSION["id_user"]) && ($_SESSION["user_type"] == $user_administrator || $_SESSION["user_type"] == $user_supervisor)) {
-    header("Location: {$screen_administrator}");
+    header("Location: {$screen_historic}");
 } elseif (isset($_SESSION["id_user"]) && $_SESSION["user_type"] == $user_callcenter) {
     header("Location: {$screen_cancellation_form}");
 } elseif (isset($_SESSION["id_user"]) && $_SESSION["user_type"] == $user_scheduling) {
