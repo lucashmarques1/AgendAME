@@ -224,7 +224,7 @@ $stmt->close();
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='10'>Nenhum paciente encontrado com as mesmas especialidade e data de exame.</td></tr>";
+                        echo "<tr><td colspan='11'>Nenhum paciente encontrado com as mesmas especialidade e data de exame.</td></tr>";
                     }
                     ?>
                 </tbody>
