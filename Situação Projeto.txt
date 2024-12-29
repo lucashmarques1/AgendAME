@@ -1,5 +1,0 @@
-Dia da atualização: 29/12/2024
-
-
-Falta Verificar:
-- Falta Testar Todas Funcionalidades e validar tudo
