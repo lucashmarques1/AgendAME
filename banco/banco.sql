@@ -1,4 +1,4 @@
--- Create the patient_schedule database if it doesn't exist and use it
+-- Create patient_schedule database if it doesn't exist and use it
 CREATE DATABASE IF NOT EXISTS patient_schedule;
 USE patient_schedule;
 
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS professional_specialty (
 CREATE TABLE IF NOT EXISTS patient (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL, -- Nome do paciente
-    registration_number VARCHAR(50) NOT NULL, -- Número de registro do paciente
+    registration_number VARCHAR(50) NOT NULL, -- Número de registro do paciente (CROSS)
     medical_specialty INT, -- Liga ao id da tabela medical_specialty
     professional_id INT, -- Liga ao id da tabela profissional
     exam_date DATETIME, -- Data do exame
@@ -65,18 +65,3 @@ CREATE TABLE IF NOT EXISTS patient (
 
 -- Add user as administrator
 INSERT INTO user (name, username, password, user_type) VALUES ('Lucas Henrique Marques','lmarques', '049d228d1fbcbb11c894573dc19ce843', 'administrador');
-
--- Inserindo todas as especialidades médicas
-INSERT INTO medical_specialty (specialty_name) VALUES
-('Alergologia'),('Audiometria'),('Avaliação de Catarata'),('Biopsia de Próstata'),('Campimetria'),('Cardiologia'),
-('Catarata'),('Cirurgia Plástica'),('Cirurgia Vascular'),('Cistoscopia'),('Colonoscopia'),('Dermatologia'),
-('Derm/Plastic - Tumor Pele'),('Ecocardio'),('Ecocardiograma'),('Eletrocardio'),('Eletroencefalograma'),
-('Eletroneuromiografia'),('Endocrinologia'),('Endoscopia'),('Escleroterapia'),('Espirometria'),
-('Gastroclínica'),('Gastroenterologia'),('Holter'),('Impedanciometria'),('Infectologia'),('Infiltração'),
-('MAPA'),('Mamografia'),('Mastologia'),('Nasofibroscopia'),('Nefrologia'),('Neurologia'),
-('Neurologia Pediátrica'),('Nutrição'),('Oftalmologia'),('Ortopedia'),('Otorrinolaringologia'),
-('PAAF de Mama'),('PAAF de Tireoide'),('Pequena Cirurgia Dermato'),('Pequena Cirurgia Plástica'),
-('Pterígio'),('Pneumologia'),('Postectomia'),('Psicologia'),('Raio-X'),('Reumatologia'),
-('Teste Alergico Patch'),('Teste Alergico Prick'),('Teste Ergométrico'),('Tomografia'),
-('Urofluxometria'),('Urologia'),('US Doppler'),('US Esquelético'),('US Geral'),('Vasectomia'),
-('Videolaringoscopia'),('YAG Laser');
