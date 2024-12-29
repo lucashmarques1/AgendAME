@@ -267,8 +267,8 @@ $professionalSpecialties = getProfessionalSpecialties($connection);
                     <select name="license_type" class="form-select mb-3">
                         <option value="CRM" <?= ($professional['license_type'] == 'CRM') ? 'selected' : '' ?>>CRM</option>
                         <option value="COREN" <?= ($professional['license_type'] == 'COREN') ? 'selected' : '' ?>>COREN</option>
-                        <option value="FONO" <?= ($professional['license_type'] == 'FONO') ? 'selected' : '' ?>>FONO</option>
-                        <option value="Psicologa" <?= ($professional['license_type'] == 'Psicologa') ? 'selected' : '' ?>>Psicologa</option>
+                        <option value="CRFA" <?= ($professional['license_type'] == 'CRFA') ? 'selected' : '' ?>>CRFA</option>
+                        <option value="CRA" <?= ($professional['license_type'] == 'CRA') ? 'selected' : '' ?>>CRA</option>
                     </select>
                     <select name="active" class="form-select mb-3">
                         <option value="1" <?= ($professional['active'] == 1) ? 'selected' : '' ?>>Ativo</option>
