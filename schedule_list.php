@@ -175,7 +175,7 @@ $result = fetchPatients($connection, $_POST['search'] ?? null);
                             echo "<tr>";
                             echo "<td>" . htmlspecialchars($row["medical_specialty"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["professional_name"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["exam_date"]) . "</td>";
+                            echo "<td>" . date('d/m/Y H:i:s', strtotime($row['exam_date'])) . "</td>";
                             echo "<td>" . nl2br(htmlspecialchars($row["comment"])) . "</td>";
                             if ($row["situation"] == "pendente") { /* Pendente é o paciente que será cancelado  */
                                 echo "<td><button type='button' class='btn btn-primary substituir-paciente' data-bs-toggle='modal' data-bs-target='#schedule_new_patient' data-paciente-id='" . htmlspecialchars($row['id']) . "'>Preencher Vaga</button></td>";

@@ -44,9 +44,10 @@
 
                         if ($userType == $user_administrator || $userType == $user_scheduling || $userType == $user_supervisor) {
                             echo "<li class='nav-item'><a class='nav-link' href='$screen_scheduling'>Agendamento</a></li>";
-                            echo "<li class='nav-item'><a class='nav-link' href='$screen_historic'>Histórico</a></li>";
                         }
 
+                        echo "<li class='nav-item'><a class='nav-link' href='$screen_historic'>Histórico</a></li>";
+                        
                         echo "<li class='nav-item'><a class='nav-link' href='$screen_login?logout=true' style='color: red !important;'>Sair <i class='bi bi-box-arrow-left'></i></a></li>";
                     } else {
                         echo "<li class='nav-item'><i class='bi bi-hospital fs-2'></i></li>";

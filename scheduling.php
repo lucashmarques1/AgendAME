@@ -205,7 +205,7 @@ $stmt->close();
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8">Nenhum paciente foi encontrado!</td>
+                            <td colspan="8" class="text-center">Nenhum paciente foi encontrado!</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

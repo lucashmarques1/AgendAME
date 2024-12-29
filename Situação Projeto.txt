@@ -1,6 +1,5 @@
-Dia da atualização: 25/12/2024
+Dia da atualização: 29/12/2024
 
 
 Falta Verificar:
 - Falta Testar Todas Funcionalidades e validar tudo
-- Arrumar SELECT do cadastro de responsável (CRM, COREN, FONO, PSICOLOGA)

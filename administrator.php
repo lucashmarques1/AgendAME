@@ -55,14 +55,14 @@ function saveProfessional($connection, $id, $name, $license_number, $license_typ
 // Funções para carregar dados Profissionais/Especialidades
 function getProfessionals($connection)
 {
-    $stmt = $connection->prepare("SELECT id, name, active FROM professional");
+    $stmt = $connection->prepare("SELECT id, name, active FROM professional ORDER BY name ASC");
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 function getSpecialties($connection)
 {
-    $stmt = $connection->prepare("SELECT id, specialty_name, active FROM medical_specialty");
+    $stmt = $connection->prepare("SELECT id, specialty_name, active FROM medical_specialty ORDER BY specialty_name ASC");
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
@@ -73,7 +73,8 @@ function getProfessionalSpecialties($connection)
         "SELECT ps.id, ps.professional_id, ps.specialty_id, p.name AS professional_name, s.specialty_name, ps.active
         FROM professional_specialty ps
         JOIN professional p ON ps.professional_id = p.id
-        JOIN medical_specialty s ON ps.specialty_id = s.id"
+        JOIN medical_specialty s ON ps.specialty_id = s.id
+        ORDER BY name ASC"
     );
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);

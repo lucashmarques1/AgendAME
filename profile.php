@@ -121,9 +121,9 @@ $users = $connection->query("SELECT id, username FROM user ORDER BY username ASC
 
 <body class="text-white" style="background-color: #156183;">
     <div class="container mt-5">
-        <?php if (in_array($_SESSION["user_type"], [$user_administrator])) { // Se for Administrador, vai ter acesso 
-        ?>
-            <div class="row justify-content-center">
+        <div class="row justify-content-center">
+            <?php if (in_array($_SESSION["user_type"], [$user_administrator])) { // Se for Administrador, vai ter acesso 
+            ?>
                 <div class="col-md-4 p-5 bg-white rounded shadow mb-4 mx-1">
                     <h2 class="text-center mb-4">Cadastro de Usuário</h2>
                     <form method="POST">
@@ -199,7 +199,7 @@ $users = $connection->query("SELECT id, username FROM user ORDER BY username ASC
                     <button type="submit" class="btn btn-primary w-100">Alterar Senha</button>
                 </form>
             </div>
-            </div>
+        </div>
     </div>
 
     <script>
