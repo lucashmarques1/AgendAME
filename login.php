@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["LOGIN"])) {
                                         </div>
 
                                         <div class="text-center">
-                                            <p>Última atualização: 29/12/2024</p>
+                                            <p>Última atualização: 30/12/2024</p>
                                         </div>
                                     </form>
                                 </div>
