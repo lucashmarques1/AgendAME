@@ -23,11 +23,11 @@ CREATE TABLE IF NOT EXISTS medical_specialties (
 -- Professionals table
 CREATE TABLE IF NOT EXISTS professionals (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL, -- Nome do especialista
-    license_number VARCHAR(20) NOT NULL, -- Número do CRM ou outra licença
-    license_type VARCHAR(20) NOT NULL, -- Tipo de licença
+    name VARCHAR(150) NOT NULL,
+    license_number INT(30) NOT NULL, -- Número da licença do profissional
+    license_type VARCHAR(30) NOT NULL, -- CRM, COREN...
     active TINYINT NOT NULL DEFAULT 1,
-    UNIQUE (license_number, license_type) -- Validação combinada
+    UNIQUE (license_number, license_type) -- Garante que não existam tipo de licença com o mesmo número
 );
 
 -- Professional-Specialties table
@@ -44,15 +44,15 @@ CREATE TABLE IF NOT EXISTS professional_specialties (
 -- Patients table
 CREATE TABLE IF NOT EXISTS patients (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL, -- Nome do paciente
-    registration_number VARCHAR(50) NOT NULL, -- Número de registro do paciente (CROSS)
-    medical_specialty_id INT, -- Liga ao id da tabela medical_specialties
-    professional_id INT, -- Liga ao id da tabela professionals
+    name VARCHAR(100) NOT NULL,
+    registration_number INT(50) NOT NULL, -- Número de registro do paciente (SIRESP)
+    medical_specialty_id INT, -- id da tabela medical_specialties (FK)
+    professional_id INT, -- id da tabela professionals (FK)
     exam_date DATETIME, -- Data do exame
     contact_datetime DATETIME, -- Data e hora do contato do paciente
     cancel_reason VARCHAR(500), -- Motivo do cancelamento
     cancellation_datetime DATETIME, -- Data e hora do cancelamento
-    exchange_date DATETIME, -- Data de reagendamento
+    exchange_date DATETIME, -- Data do agendamento
     registering_user_id INT NOT NULL, -- Usuário que registrou o paciente
     situation ENUM('agendado', 'agendamento em andamento', 'cancelado', 'cancelamento em andamento', 'pendente', 'revisao', 'sem demanda') NOT NULL DEFAULT 'pendente',
     comment VARCHAR(500), -- Comentários adicionais

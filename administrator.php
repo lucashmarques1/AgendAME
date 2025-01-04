@@ -244,7 +244,7 @@ $professionalSpecialties = getProfessionalSpecialties($connection);
                             <option value="<?= $row['id'] ?>" <?= ($row['id'] == $specialty['id']) ? 'selected' : '' ?>><?= $row['specialty_name'] ?></option>
                         <?php endwhile; ?>
                     </select>
-                    <input type="text" name="specialty_name" class="form-control mb-3" placeholder="Nome da Especialidade" value="<?= htmlspecialchars($specialty['specialty_name']) ?>" required>
+                    <input type="text" name="specialty_name" class="form-control mb-3" placeholder="Nome da Especialidade" maxlength="100" autocomplete="off" value="<?= htmlspecialchars($specialty['specialty_name']) ?>" required>
                     <select name="active" class="form-select mb-3">
                         <option value="1" <?= ($specialty['active'] == 1) ? 'selected' : '' ?>>Ativo</option>
                         <option value="0" <?= ($specialty['active'] == 0) ? 'selected' : '' ?>>Inativo</option>
@@ -263,8 +263,8 @@ $professionalSpecialties = getProfessionalSpecialties($connection);
                             <option value="<?= $row['id'] ?>" <?= ($row['id'] == $professional['id']) ? 'selected' : '' ?>><?= $row['name'] ?></option>
                         <?php endwhile; ?>
                     </select>
-                    <input type="text" name="professional_name" class="form-control mb-3" placeholder="Nome" value="<?= htmlspecialchars($professional['name']) ?>" required>
-                    <input type="text" name="license_number" class="form-control mb-3" placeholder="Nº Licença" value="<?= htmlspecialchars($professional['license_number']) ?>" required>
+                    <input type="text" name="professional_name" class="form-control mb-3" placeholder="Nome"  maxlength="150" autocomplete="off" value="<?= htmlspecialchars($professional['name']) ?>" required>
+                    <input type="number" name="license_number" class="form-control mb-3" placeholder="Nº Licença" value="<?= htmlspecialchars($professional['license_number']) ?>" required>
                     <select name="license_type" class="form-select mb-3">
                         <option value="CRM" <?= ($professional['license_type'] == 'CRM') ? 'selected' : '' ?>>CRM</option>
                         <option value="COREN" <?= ($professional['license_type'] == 'COREN') ? 'selected' : '' ?>>COREN</option>

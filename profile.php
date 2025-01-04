@@ -138,19 +138,19 @@ $users = $connection->query("SELECT id, username FROM users ORDER BY username AS
                         </div>
                         <div class="mb-3">
                             <label for="name" class="form-label text-dark">Nome</label>
-                            <input type="text" name="name" id="name" class="form-control" value="<?php echo $user['name'] ?? ''; ?>" required>
+                            <input type="text" name="name" id="name" class="form-control" maxlength="150" autocomplete="off" value="<?php echo $user['name'] ?? ''; ?>" required>
                         </div>
                         <div class="mb-3">
                             <label for="username" class="form-label text-dark">Usuário</label>
-                            <input type="text" name="username" id="username" class="form-control" value="<?php echo $user['username'] ?? ''; ?>" required>
+                            <input type="text" name="username" id="username" class="form-control" maxlength="50" autocomplete="off" value="<?php echo $user['username'] ?? ''; ?>" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label text-dark">Senha</label>
-                            <input type="password" name="password" id="password" class="form-control">
+                            <input type="password" name="password" id="password" class="form-control" maxlength="30">
                         </div>
                         <div class="mb-3">
                             <label for="confirm_password" class="form-label text-dark">Confirme a Senha</label>
-                            <input type="password" name="confirm_password" id="confirm_password" class="form-control">
+                            <input type="password" name="confirm_password" id="confirm_password" class="form-control" maxlength="30">
                         </div>
                         <div class="mb-3">
                             <label for="user_type" class="form-label text-dark">Tipo de Usuário</label>
@@ -181,7 +181,7 @@ $users = $connection->query("SELECT id, username FROM users ORDER BY username AS
                     <div class="mb-3 position-relative">
                         <label for="new_password" class="form-label text-dark">Nova Senha</label>
                         <div class="input-group">
-                            <input type="password" name="new_password" id="new_password" class="form-control" required>
+                            <input type="password" name="new_password" id="new_password" class="form-control" maxlength="30" required>
                             <span class="input-group-text bg-white border-0">
                                 <i id="toggleNewPassword" class="bi bi-eye-fill text-dark" style="cursor: pointer;"></i>
                             </span>
@@ -190,7 +190,7 @@ $users = $connection->query("SELECT id, username FROM users ORDER BY username AS
                     <div class="mb-3 position-relative">
                         <label for="confirm_new_password" class="form-label text-dark">Confirmar Nova Senha</label>
                         <div class="input-group">
-                            <input type="password" name="confirm_new_password" id="confirm_new_password" class="form-control" required>
+                            <input type="password" name="confirm_new_password" id="confirm_new_password" class="form-control" maxlength="30" required>
                             <span class="input-group-text bg-white border-0">
                                 <i id="toggleConfirmNewPassword" class="bi bi-eye-fill text-dark" style="cursor: pointer;"></i>
                             </span>
