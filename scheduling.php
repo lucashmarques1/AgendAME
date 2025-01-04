@@ -16,7 +16,7 @@ if (!in_array($_SESSION["user_type"], [$user_administrator, $user_scheduling, $u
 // Pega as informações do paciente para a função updatePatientStatus
 function getPatientDetails($connection, $id)
 {
-    $sql = "SELECT name, registration_number FROM patient WHERE id = ?";
+    $sql = "SELECT name, registration_number FROM patients WHERE id = ?";
     if ($stmt = $connection->prepare($sql)) {
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
@@ -45,7 +45,7 @@ function updatePatientStatus($connection, $id, $situation, $currentDateTime, $co
     }
 
     // Prepara a query de atualização
-    $sql = "UPDATE patient SET situation = ?, $dateField = ?, comment = ? WHERE id = ?";
+    $sql = "UPDATE patients SET situation = ?, $dateField = ?, comment = ? WHERE id = ?";
     if ($stmt = $connection->prepare($sql)) {
         $stmt->bind_param("sssi", $situation, $currentDateTime, $comment, $id);
         if ($stmt->execute()) {
@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Verifica se o paciente existe e se a situação está definida
     if ($patient_id && in_array($situation, ['revisao', 'agendado'])) {
         // Busca a situação atual do paciente
-        $sql = "SELECT situation FROM patient WHERE id = ?";
+        $sql = "SELECT situation FROM patients WHERE id = ?";
         if ($stmt = $connection->prepare($sql)) {
             $stmt->bind_param("i", $patient_id);
             $stmt->execute();
@@ -110,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 // Seleciona pacientes que precisam ser agendados ou cancelados
-$sql = "SELECT p.id, p.name, p.registration_number, ms.specialty_name AS medical_specialty, rs.name AS professional_name, p.exam_date, p.cancel_reason, p.situation, p.comment FROM patient p JOIN medical_specialty ms ON p.medical_specialty = ms.id LEFT JOIN professional rs ON p.professional_id = rs.id WHERE p.situation IN ('agendamento em andamento', 'cancelamento em andamento')";
+$sql = "SELECT p.id, p.name, p.registration_number, ms.specialty_name AS medical_specialty_id, rs.name AS professional_name, p.exam_date, p.cancel_reason, p.situation, p.comment FROM patients p JOIN medical_specialties ms ON p.medical_specialty_id = ms.id LEFT JOIN professionals rs ON p.professional_id = rs.id WHERE p.situation IN ('agendamento em andamento', 'cancelamento em andamento')";
 
 
 // Parâmetros de busca, se houver um termo de pesquisa
@@ -175,7 +175,7 @@ $stmt->close();
                             <tr>
                                 <td><?= $row["name"] ?></td>
                                 <td><?= $row["registration_number"] ?></td>
-                                <td><?= $row["medical_specialty"] ?></td>
+                                <td><?= $row["medical_specialty_id"] ?></td>
                                 <td><?= $row["professional_name"] ?></td>
                                 <td><?= date("d/m/Y H:i:s", strtotime($row["exam_date"])) ?></td>
                                 <td>

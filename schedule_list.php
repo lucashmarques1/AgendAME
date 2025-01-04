@@ -18,7 +18,7 @@ if (!in_array($_SESSION["user_type"], [$user_administrator, $user_callcenter, $u
 function fetchPatients($connection, $searchTerm = null)
 {
     // Inicializa a consulta SQL
-    $sql = "SELECT p.id, ms.specialty_name AS medical_specialty, rp.name AS professional_name, p.exam_date, p.situation, p.comment FROM patient p JOIN medical_specialty ms ON p.medical_specialty = ms.id LEFT JOIN professional rp ON p.professional_id = rp.id WHERE p.situation IN ('pendente', 'revisao')";
+    $sql = "SELECT p.id, ms.specialty_name AS medical_specialty_id, rp.name AS professional_name, p.exam_date, p.situation, p.comment FROM patients p JOIN medical_specialties ms ON p.medical_specialty_id = ms.id LEFT JOIN professionals rp ON p.professional_id = rp.id WHERE p.situation IN ('pendente', 'revisao')";
 
     // Se houver um termo de busca, adiciona a condição ao SQL
     if ($searchTerm) {
@@ -42,7 +42,7 @@ function fetchPatients($connection, $searchTerm = null)
 // Função para atualizar o status do paciente que vai ser cancelado.
 function updatePatientStatus($connection, $id, $situation, $currentDateTime, $comment)
 {
-    $updateSql = "UPDATE patient SET situation = ?, cancellation_datetime = ?, comment = ? WHERE id = ?";
+    $updateSql = "UPDATE patients SET situation = ?, cancellation_datetime = ?, comment = ? WHERE id = ?";
     $stmt = $connection->prepare($updateSql);
     $stmt->bind_param("sssi", $situation, $currentDateTime, $comment, $id);
     return $stmt->execute();
@@ -67,13 +67,13 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["id"], $_GET["situation"
 function handleNewPatient($connection, $old_patient_id, $name, $registration_number, $currentDateTime, $comment)
 {
     // Atualiza situação do paciente antigo para "cancelamento em andamento"
-    $updateSql = "UPDATE patient SET situation = 'cancelamento em andamento' WHERE id = ?";
+    $updateSql = "UPDATE patients SET situation = 'cancelamento em andamento' WHERE id = ?";
     $stmtUpdate = $connection->prepare($updateSql);
     $stmtUpdate->bind_param("i", $old_patient_id);
     $stmtUpdate->execute();
 
     // Recupera ID do responsável, ID da especialidade (agenda) e data do exame do paciente antigo para usar no novo paciente
-    $selectSql = "SELECT ms.id AS medical_specialty, p.professional_id, p.exam_date FROM patient p JOIN medical_specialty ms ON p.medical_specialty = ms.id WHERE p.id = ?";
+    $selectSql = "SELECT ms.id AS medical_specialty_id, p.professional_id, p.exam_date FROM patients p JOIN medical_specialties ms ON p.medical_specialty_id = ms.id WHERE p.id = ?";
     $stmtSelect = $connection->prepare($selectSql);
     $stmtSelect->bind_param("i", $old_patient_id);
     $stmtSelect->execute();
@@ -83,9 +83,9 @@ function handleNewPatient($connection, $old_patient_id, $name, $registration_num
         $row = $result->fetch_assoc();
 
         // Verifica se a vaga já está ocupada por um paciente agendado (Se já não foi preenchida)
-        $checkSql = "SELECT * FROM patient WHERE medical_specialty = ? AND professional_id = ? AND exam_date = ? AND situation IN ('agendado', 'agendamento em andamento')";
+        $checkSql = "SELECT * FROM patients WHERE medical_specialty_id = ? AND professional_id = ? AND exam_date = ? AND situation IN ('agendado', 'agendamento em andamento')";
         $stmtCheck = $connection->prepare($checkSql);
-        $stmtCheck->bind_param("iis", $row['medical_specialty'], $row['professional_id'], $row['exam_date']);
+        $stmtCheck->bind_param("iis", $row['medical_specialty_id'], $row['professional_id'], $row['exam_date']);
         $stmtCheck->execute();
         $checkResult = $stmtCheck->get_result();
 
@@ -94,10 +94,10 @@ function handleNewPatient($connection, $old_patient_id, $name, $registration_num
             return "A vaga já foi preenchida por outro paciente.";
         } else {
             // Insere os dados do novo paciente e coloca ele na situação "agendamento em andamento"
-            $insertSql = "INSERT INTO patient (name, registration_number, medical_specialty, professional_id, exam_date, contact_datetime, registering_user_id, situation, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insertSql = "INSERT INTO patients (name, registration_number, medical_specialty_id, professional_id, exam_date, contact_datetime, registering_user_id, situation, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $situation = "agendamento em andamento";
             $stmtInsert = $connection->prepare($insertSql);
-            $stmtInsert->bind_param("ssiississ", $name, $registration_number, $row['medical_specialty'], $row['professional_id'], $row['exam_date'], $currentDateTime, $_SESSION["id_user"], $situation, $comment);
+            $stmtInsert->bind_param("ssiississ", $name, $registration_number, $row['medical_specialty_id'], $row['professional_id'], $row['exam_date'], $currentDateTime, $_SESSION["id_user"], $situation, $comment);
             $stmtInsert->execute();
             return "Paciente encaminhado para agendar sua consulta/exame.";
         }
@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["NOVO_PACIENTE"])) {
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["SEM_DEMANDA"])) {
     $old_patient_id = trim($_POST['OLD_PATIENT_ID']);
 
-    $updateSql = "UPDATE patient SET situation = 'cancelamento em andamento', comment = 'Solicitado apenas o cancelamento dessa agenda, pois não há paciente disponível para preencher essa vaga.' WHERE id = ?";
+    $updateSql = "UPDATE patients SET situation = 'cancelamento em andamento', comment = 'Solicitado apenas o cancelamento dessa agenda, pois não há paciente disponível para preencher essa vaga.' WHERE id = ?";
     $stmtUpdate = $connection->prepare($updateSql);
     $stmtUpdate->bind_param("i", $old_patient_id);
     $stmtUpdate->execute();
@@ -173,7 +173,7 @@ $result = fetchPatients($connection, $_POST['search'] ?? null);
                         // Exibir dados de cada paciente
                         while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
-                            echo "<td>" . htmlspecialchars($row["medical_specialty"]) . "</td>";
+                            echo "<td>" . htmlspecialchars($row["medical_specialty_id"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["professional_name"]) . "</td>";
                             echo "<td>" . date('d/m/Y H:i:s', strtotime($row['exam_date'])) . "</td>";
                             echo "<td>" . nl2br(htmlspecialchars($row["comment"])) . "</td>";

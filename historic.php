@@ -25,8 +25,8 @@ if (isset($_POST['search_individual']) && !empty(trim($_POST['search_individual'
         WHEN p.situation = 'cancelamento em andamento' THEN '#a15454' 
         ELSE 'gray' 
     END AS situation_color 
-FROM patient p JOIN medical_specialty ms ON p.medical_specialty = ms.id JOIN user u ON p.registering_user_id = u.id
-LEFT JOIN professional rp ON p.professional_id = rp.id WHERE p.name LIKE ? OR p.registration_number LIKE ? ORDER BY p.contact_datetime ASC LIMIT 10;
+FROM patients p JOIN medical_specialties ms ON p.medical_specialty_id = ms.id JOIN users u ON p.registering_user_id = u.id
+LEFT JOIN professionals rp ON p.professional_id = rp.id WHERE p.name LIKE ? OR p.registration_number LIKE ? ORDER BY p.contact_datetime ASC LIMIT 10;
 "; // Limitar a busca a até 10 resultados
     $stmtInd = $connection->prepare($sqlIndividual);
     $stmtInd->bind_param("ss", $searchIndividual, $searchIndividual);
@@ -39,7 +39,7 @@ LEFT JOIN professional rp ON p.professional_id = rp.id WHERE p.name LIKE ? OR p.
 
 
 // SQL base para a tabela de pacientes agendados e cancelados com mesmas especialidades e datas de exame
-$sql = "SELECT p1.name AS canceled_patient_name, p1.registration_number AS canceled_patient_cross, p1.situation AS canceled_patient_status, u1.username AS canceled_patient_user, p2.name AS scheduled_patient_name, p2.registration_number AS scheduled_patient_cross, p2.situation AS scheduled_patient_status, u2.username AS scheduled_patient_user, ms.specialty_name AS medical_specialty, rs.name AS professional_name, p1.exam_date AS exam_date, 
+$sql = "SELECT p1.name AS canceled_patient_name, p1.registration_number AS canceled_patient_cross, p1.situation AS canceled_patient_status, u1.username AS canceled_patient_user, p2.name AS scheduled_patient_name, p2.registration_number AS scheduled_patient_cross, p2.situation AS scheduled_patient_status, u2.username AS scheduled_patient_user, ms.specialty_name AS medical_specialty_id, rs.name AS professional_name, p1.exam_date AS exam_date, 
 -- Cores (Situação Paciente 1)
 CASE 
     WHEN p1.situation = 'cancelado' THEN '#d12a3b'
@@ -59,7 +59,7 @@ CASE
     ELSE 'gray' 
 END AS scheduled_patient_status_color
 
-FROM patient p1 LEFT JOIN patient p2 ON p1.exam_date = p2.exam_date AND p1.medical_specialty = p2.medical_specialty AND p1.professional_id = p2.professional_id AND p2.situation IN ('agendado', 'agendamento em andamento') JOIN medical_specialty ms ON p1.medical_specialty = ms.id JOIN professional rs ON p1.professional_id = rs.id JOIN user u1 ON p1.registering_user_id = u1.id LEFT JOIN user u2 ON p2.registering_user_id = u2.id WHERE p1.exam_date >= CURRENT_DATE() - INTERVAL 30 DAY AND p1.situation IN ('cancelado', 'cancelamento em andamento', 'pendente')";
+FROM patients p1 LEFT JOIN patients p2 ON p1.exam_date = p2.exam_date AND p1.medical_specialty_id = p2.medical_specialty_id AND p1.professional_id = p2.professional_id AND p2.situation IN ('agendado', 'agendamento em andamento') JOIN medical_specialties ms ON p1.medical_specialty_id = ms.id JOIN professionals rs ON p1.professional_id = rs.id JOIN users u1 ON p1.registering_user_id = u1.id LEFT JOIN users u2 ON p2.registering_user_id = u2.id WHERE p1.exam_date >= CURRENT_DATE() - INTERVAL 30 DAY AND p1.situation IN ('cancelado', 'cancelamento em andamento', 'pendente')";
 
 // Filtro de busca da tabela principal
 if (isset($_POST['search_main']) && !empty(trim($_POST['search_main']))) {
@@ -218,7 +218,7 @@ $stmt->close();
                             }
 
                             echo "<td>" . htmlspecialchars($row["scheduled_patient_user"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["medical_specialty"]) . "</td>";
+                            echo "<td>" . htmlspecialchars($row["medical_specialty_id"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["professional_name"]) . "</td>";
                             echo "<td>" . date("d/m/Y H:i:s", strtotime($row["exam_date"])) . "</td>";
                             echo "</tr>";

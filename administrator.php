@@ -13,7 +13,7 @@ if (!in_array($_SESSION["user_type"], [$user_administrator])) {
 // Funções para especialidades
 function getSpecialtyById($connection, $id)
 {
-    $stmt = $connection->prepare("SELECT id, specialty_name, active FROM medical_specialty WHERE id = ?");
+    $stmt = $connection->prepare("SELECT id, specialty_name, active FROM medical_specialties WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
@@ -22,10 +22,10 @@ function getSpecialtyById($connection, $id)
 function saveSpecialty($connection, $id, $specialty_name, $active)
 {
     if ($id) {
-        $stmt = $connection->prepare("UPDATE medical_specialty SET specialty_name = ?, active = ? WHERE id = ?");
+        $stmt = $connection->prepare("UPDATE medical_specialties SET specialty_name = ?, active = ? WHERE id = ?");
         $stmt->bind_param("sii", $specialty_name, $active, $id);
     } else {
-        $stmt = $connection->prepare("INSERT INTO medical_specialty (specialty_name, active) VALUES (?, ?)");
+        $stmt = $connection->prepare("INSERT INTO medical_specialties (specialty_name, active) VALUES (?, ?)");
         $stmt->bind_param("si", $specialty_name, $active);
     }
     return $stmt->execute();
@@ -34,7 +34,7 @@ function saveSpecialty($connection, $id, $specialty_name, $active)
 // Funções para profissionais
 function getProfessionalById($connection, $id)
 {
-    $stmt = $connection->prepare("SELECT id, name, license_number, license_type, active FROM professional WHERE id = ?");
+    $stmt = $connection->prepare("SELECT id, name, license_number, license_type, active FROM professionals WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
@@ -43,10 +43,10 @@ function getProfessionalById($connection, $id)
 function saveProfessional($connection, $id, $name, $license_number, $license_type, $active)
 {
     if ($id) {
-        $stmt = $connection->prepare("UPDATE professional SET name = ?, license_number = ?, license_type = ?, active = ? WHERE id = ?");
+        $stmt = $connection->prepare("UPDATE professionals SET name = ?, license_number = ?, license_type = ?, active = ? WHERE id = ?");
         $stmt->bind_param("sssii", $name, $license_number, $license_type, $active, $id);
     } else {
-        $stmt = $connection->prepare("INSERT INTO professional (name, license_number, license_type, active) VALUES (?, ?, ?, ?)");
+        $stmt = $connection->prepare("INSERT INTO professionals (name, license_number, license_type, active) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("sssi", $name, $license_number, $license_type, $active);
     }
     return $stmt->execute();
@@ -55,14 +55,14 @@ function saveProfessional($connection, $id, $name, $license_number, $license_typ
 // Funções para carregar dados Profissionais/Especialidades
 function getProfessionals($connection)
 {
-    $stmt = $connection->prepare("SELECT id, name, active FROM professional ORDER BY name ASC");
+    $stmt = $connection->prepare("SELECT id, name, active FROM professionals ORDER BY name ASC");
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
 function getSpecialties($connection)
 {
-    $stmt = $connection->prepare("SELECT id, specialty_name, active FROM medical_specialty ORDER BY specialty_name ASC");
+    $stmt = $connection->prepare("SELECT id, specialty_name, active FROM medical_specialties ORDER BY specialty_name ASC");
     $stmt->execute();
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
@@ -71,9 +71,9 @@ function getProfessionalSpecialties($connection)
 {
     $stmt = $connection->prepare(
         "SELECT ps.id, ps.professional_id, ps.specialty_id, p.name AS professional_name, s.specialty_name, ps.active
-        FROM professional_specialty ps
-        JOIN professional p ON ps.professional_id = p.id
-        JOIN medical_specialty s ON ps.specialty_id = s.id
+        FROM professional_specialties ps
+        JOIN professionals p ON ps.professional_id = p.id
+        JOIN medical_specialties s ON ps.specialty_id = s.id
         ORDER BY name ASC"
     );
     $stmt->execute();
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['professional_specialt
         if ($id === 'novo') {
             // Verifica se o vínculo já existe
             $checkStmt = $connection->prepare(
-                "SELECT COUNT(*) FROM professional_specialty WHERE professional_id = ? AND specialty_id = ?"
+                "SELECT COUNT(*) FROM professional_specialties WHERE professional_id = ? AND specialty_id = ?"
             );
             $checkStmt->bind_param("ii", $professional_id, $specialty_id);
             $checkStmt->execute();
@@ -132,14 +132,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['professional_specialt
             if ($count > 0) {
                 print("<script>alert('Este vínculo já existe!');</script>");
             } else {
-                $stmt = $connection->prepare("INSERT INTO professional_specialty (professional_id, specialty_id, active) VALUES (?, ?, ?)");
+                $stmt = $connection->prepare("INSERT INTO professional_specialties (professional_id, specialty_id, active) VALUES (?, ?, ?)");
                 $stmt->bind_param("iii", $professional_id, $specialty_id, $active);
                 $stmt->execute();
                 print("<script>alert('Vínculo criado com sucesso!');</script>");
             }
         } else {
             // Atualiza diretamente o status ativo/inativo
-            $stmt = $connection->prepare("UPDATE professional_specialty SET active = ? WHERE id = ?");
+            $stmt = $connection->prepare("UPDATE professional_specialties SET active = ? WHERE id = ?");
             $stmt->bind_param("ii", $active, $id);
             $stmt->execute();
 
@@ -168,8 +168,8 @@ if (isset($_GET['professional_id']) && !empty($_GET['professional_id'])) {
 }
 
 // Busca listas para dropdown
-$existingSpecialties = $connection->query("SELECT id, specialty_name FROM medical_specialty ORDER BY specialty_name ASC");
-$existingProfessionals = $connection->query("SELECT id, name FROM professional ORDER BY name ASC");
+$existingSpecialties = $connection->query("SELECT id, specialty_name FROM medical_specialties ORDER BY specialty_name ASC");
+$existingProfessionals = $connection->query("SELECT id, name FROM professionals ORDER BY name ASC");
 
 // Buscar Profissionais, Especialidades para usar nos vinculos
 $professionals = getProfessionals($connection);

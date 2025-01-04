@@ -13,15 +13,15 @@ if (!in_array($_SESSION["user_type"], [$user_administrator, $user_callcenter, $u
 
 
 // Função para inserir paciente no banco de dados
-function insertPatient($connection, $name, $registration_number, $medical_specialty, $exam_date, $cancel_reason, $user_id, $professional_id, $situation)
+function insertPatient($connection, $name, $registration_number, $medical_specialty_id, $exam_date, $cancel_reason, $user_id, $professional_id, $situation)
 {
-    $sql = "INSERT INTO patient (name, registration_number, medical_specialty, exam_date, contact_datetime, cancel_reason, registering_user_id, professional_id, situation)
+    $sql = "INSERT INTO patients (name, registration_number, medical_specialty_id, exam_date, contact_datetime, cancel_reason, registering_user_id, professional_id, situation)
             VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
     $stmt = $connection->prepare($sql);
     if ($stmt === false) {
         return $connection->error;
     }
-    $stmt->bind_param("ssisssis", $name, $registration_number, $medical_specialty, $exam_date, $cancel_reason, $user_id, $professional_id, $situation);
+    $stmt->bind_param("ssisssis", $name, $registration_number, $medical_specialty_id, $exam_date, $cancel_reason, $user_id, $professional_id, $situation);
     if ($stmt->execute()) {
         return true;
     }
@@ -30,16 +30,16 @@ function insertPatient($connection, $name, $registration_number, $medical_specia
 
 
 // Função para verificar se já existe um paciente com a mesma especialidade médica, profissional e data de exame
-function checkPatientExistence($connection, $medical_specialty, $professional_id, $exam_date)
+function checkPatientExistence($connection, $medical_specialty_id, $professional_id, $exam_date)
 {
-    $sql = "SELECT id FROM patient 
-            WHERE medical_specialty = ? 
+    $sql = "SELECT id FROM patients 
+            WHERE medical_specialty_id = ? 
             AND professional_id = ? 
             AND exam_date = ? 
             AND situation != 'cancelado'"; // A situação 'cancelado' pode ser ignorada para essa verificação
 
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("iis", $medical_specialty, $professional_id, $exam_date);
+    $stmt->bind_param("iis", $medical_specialty_id, $professional_id, $exam_date);
     $stmt->execute();
     $stmt->store_result();
 
@@ -51,7 +51,7 @@ function checkPatientExistence($connection, $medical_specialty, $professional_id
 // Consulta especialidades médicas
 function getMedicalSpecialties($connection)
 {
-    $sql = "SELECT id, specialty_name FROM medical_specialty WHERE active = 1 ORDER BY specialty_name ASC";
+    $sql = "SELECT id, specialty_name FROM medical_specialties WHERE active = 1 ORDER BY specialty_name ASC";
     return $connection->query($sql);
 }
 
@@ -59,8 +59,8 @@ function getMedicalSpecialties($connection)
 // Consulta profissionais baseados na especialidade que cada um atua
 function getProfessionalsBySpecialty($connection, $specialty_id)
 {
-    $sql = "SELECT p.id, p.name FROM professional p
-            JOIN professional_specialty ps ON p.id = ps.professional_id
+    $sql = "SELECT p.id, p.name FROM professionals p
+            JOIN professional_specialties ps ON p.id = ps.professional_id
             WHERE ps.specialty_id = ? AND p.active = 1 AND ps.active = 1"; // Profissional e relação do profissional com a especialidade PRECISA estar ativa.
 
     $stmt = $connection->prepare($sql);
@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["REGISTRATION_CANCELLAT
     // Pega os valores do formulário
     $name = trim($_POST['NAME']);
     $registration_number = trim($_POST['REGISTRATION_NUMBER']);
-    $medical_specialty = $_POST['MEDICAL_SPECIALTY'];
+    $medical_specialty_id = $_POST['MEDICAL_SPECIALTY'];
     $cancel_reason = trim($_POST['CANCEL_REASON']);
     $exam_date = $_POST['EXAM_DATE']; // datetime-local já retorna no formato adequado
     $user_id = $_SESSION['id_user']; // recebe usuário logado do momento
@@ -91,11 +91,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["REGISTRATION_CANCELLAT
     // Verifica se já existe um paciente com o mesmo profissional, especialidade e data de exame
     $exam_date = date('Y-m-d H:i:s', strtotime($exam_date)); // Garantir o formato de data correto
 
-    if (checkPatientExistence($connection, $medical_specialty, $professional_id, $exam_date)) {
+    if (checkPatientExistence($connection, $medical_specialty_id, $professional_id, $exam_date)) {
         echo "<script>alert('Já há um paciente com consulta ou exame marcado para o mesmo horário com este profissional.');</script>";
     } else {
         // Cadastra o paciente e verifica se houve erro
-        $insertResult = insertPatient($connection, $name, $registration_number, $medical_specialty, $exam_date, $cancel_reason, $user_id, $professional_id, $situation);
+        $insertResult = insertPatient($connection, $name, $registration_number, $medical_specialty_id, $exam_date, $cancel_reason, $user_id, $professional_id, $situation);
 
         if ($insertResult === true) {
             echo "<script>alert('Paciente cadastrado com sucesso.')</script>";

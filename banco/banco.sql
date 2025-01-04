@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS patients (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL, -- Nome do paciente
     registration_number VARCHAR(50) NOT NULL, -- Número de registro do paciente (CROSS)
-    medical_specialty INT, -- Liga ao id da tabela medical_specialties
+    medical_specialty_id INT, -- Liga ao id da tabela medical_specialties
     professional_id INT, -- Liga ao id da tabela professionals
     exam_date DATETIME, -- Data do exame
     contact_datetime DATETIME, -- Data e hora do contato do paciente
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS patients (
     registering_user_id INT NOT NULL, -- Usuário que registrou o paciente
     situation ENUM('agendado', 'agendamento em andamento', 'cancelado', 'cancelamento em andamento', 'pendente', 'revisao', 'sem demanda') NOT NULL DEFAULT 'pendente',
     comment VARCHAR(500), -- Comentários adicionais
-    CONSTRAINT fk_medical_specialty FOREIGN KEY (medical_specialty) REFERENCES medical_specialties(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_medical_specialty_id FOREIGN KEY (medical_specialty_id) REFERENCES medical_specialties(id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_patient_professional FOREIGN KEY (professional_id) REFERENCES professionals(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 

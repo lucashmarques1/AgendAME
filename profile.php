@@ -13,7 +13,7 @@ if (!isset($_SESSION["id_user"])) {
 // Função para buscar informações do usuário pelo ID
 function getUserInfo($connection, $user_id)
 {
-    $stmt = $connection->prepare("SELECT id, name, username, user_type, active FROM user WHERE id = ?");
+    $stmt = $connection->prepare("SELECT id, name, username, user_type, active FROM users WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     return $stmt->get_result()->fetch_assoc();
@@ -23,10 +23,10 @@ function getUserInfo($connection, $user_id)
 function userExists($connection, $username, $id = null)
 {
     if ($id) {
-        $stmt = $connection->prepare("SELECT * FROM user WHERE username = ? AND id != ?");
+        $stmt = $connection->prepare("SELECT * FROM users WHERE username = ? AND id != ?");
         $stmt->bind_param("si", $username, $id);
     } else {
-        $stmt = $connection->prepare("SELECT * FROM user WHERE username = ?");
+        $stmt = $connection->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
     }
     $stmt->execute();
@@ -39,15 +39,15 @@ function saveUser($connection, $id, $name, $username, $password, $user_type, $ac
     if ($id) {
         if (!empty($password)) {
             $hashed_password = md5($password);
-            $stmt = $connection->prepare("UPDATE user SET name = ?, username = ?, password = ?, user_type = ?, active = ? WHERE id = ?");
+            $stmt = $connection->prepare("UPDATE users SET name = ?, username = ?, password = ?, user_type = ?, active = ? WHERE id = ?");
             $stmt->bind_param("ssssii", $name, $username, $hashed_password, $user_type, $active, $id);
         } else {
-            $stmt = $connection->prepare("UPDATE user SET name = ?, username = ?, user_type = ?, active = ? WHERE id = ?");
+            $stmt = $connection->prepare("UPDATE users SET name = ?, username = ?, user_type = ?, active = ? WHERE id = ?");
             $stmt->bind_param("sssii", $name, $username, $user_type, $active, $id);
         }
     } else {
         $hashed_password = md5($password);
-        $stmt = $connection->prepare("INSERT INTO user (name, username, password, user_type, active) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $connection->prepare("INSERT INTO users (name, username, password, user_type, active) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssi", $name, $username, $hashed_password, $user_type, $active);
     }
     return $stmt->execute();
@@ -59,7 +59,7 @@ function saveUser($connection, $id, $name, $username, $password, $user_type, $ac
 function changePassword($connection, $id, $new_password)
 {
     $hashed_password = md5($new_password);
-    $stmt = $connection->prepare("UPDATE user SET password = ? WHERE id = ?");
+    $stmt = $connection->prepare("UPDATE users SET password = ? WHERE id = ?");
     $stmt->bind_param("ss", $hashed_password, $id);
     return $stmt->execute();
 }
@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save_user'])) {
 }
 
 // Busca todos os usuários para o select
-$users = $connection->query("SELECT id, username FROM user ORDER BY username ASC");
+$users = $connection->query("SELECT id, username FROM users ORDER BY username ASC");
 ?>
 
 

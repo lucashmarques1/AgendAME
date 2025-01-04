@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["LOGIN"])) {
     $password = md5($_POST["PASSWORD"]);
 
     // Consultar o banco de dados para verificar se o usuário existe
-    $query = "SELECT id, name, username, user_type, password FROM user WHERE username = ? AND password = ? AND active = 1";
+    $query = "SELECT id, name, username, user_type, password FROM users WHERE username = ? AND password = ? AND active = 1";
     $stmt = $connection->prepare($query);
     $stmt->bind_param("ss", $username, $password);
     $stmt->execute();
@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["LOGIN"])) {
                                         </div>
 
                                         <div class="text-center">
-                                            <p>Última atualização: 30/12/2024</p>
+                                            <p>Última atualização: 03/01/2025</p>
                                         </div>
                                     </form>
                                 </div>
