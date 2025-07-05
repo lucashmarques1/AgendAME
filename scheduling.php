@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["id"], $_GET["situation"
 
 
 // Processa o formulário via POST
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['OLD_PATIENT_ID'])) {
     $patient_id = $_POST['OLD_PATIENT_ID'] ?? null;
     $situation = $_POST['situation'] ?? null;
     $comment = $_POST['COMMENT'] ?? null;
@@ -121,7 +121,7 @@ if (!empty($_POST['search'])) {
 }
 
 // Adiciona ordenação
-$sql .= " ORDER BY p.exam_date ASC";
+$sql .= " ORDER BY p.exam_date ASC, ms.specialty_name, rs.name;";
 
 // Prepara e executa a consulta
 $stmt = $connection->prepare($sql);

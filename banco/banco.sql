@@ -65,4 +65,4 @@ CREATE TABLE IF NOT EXISTS patients (
 
 
 -- Add user as administrator
-INSERT INTO users (name, username, password, user_type) VALUES ('Lucas Henrique Marques','lmarques', '049d228d1fbcbb11c894573dc19ce843', 'administrador');
+INSERT INTO users (name, username, password, user_type) VALUES ('Teste','teste', '698dc19d489c4e4db73e28a713eab07b', 'administrador');

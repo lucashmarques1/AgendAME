@@ -1,7 +1,7 @@
 <?php
 $server       = "localhost:3306";
-$user_bd      = "root";
-$password_bd  = "root";
+$user_bd      = "ame";
+$password_bd  = "AmeBot@123";
 $bd           = "patient_schedule";
 
 $connection  = mysqli_connect($server, $user_bd, $password_bd, $bd);
